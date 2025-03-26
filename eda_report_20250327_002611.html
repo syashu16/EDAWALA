@@ -1,0 +1,209 @@
+"""
+Text generation utilities for EDAwala
+"""
+import pandas as pd
+from typing import List, Dict, Any, Optional, Union
+import logging
+import os
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def format_insights_as_story(
+    df: pd.DataFrame,
+    insights: List[Dict[str, Any]],
+    use_llm: bool = False
+) -> str:
+    """
+    Format insights as a story.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        The DataFrame being analyzed
+    insights : List[Dict[str, Any]]
+        List of insights
+    use_llm : bool, optional
+        Whether to use LLM for story generation (default: False)
+        
+    Returns:
+    --------
+    str
+        Formatted story
+    """
+    # If not using LLM or no API key, generate a basic story
+    if not use_llm or not os.environ.get('GOOGLE_API_KEY'):
+        return generate_basic_story(df, insights)
+    
+    try:
+        # Try to generate story with Gemini
+        from .llm_insights_gemini import generate_story_with_llm
+        story = generate_story_with_llm(df, insights)
+        return story
+    except Exception as e:
+        logger.error(f"Error generating story with Gemini: {e}")
+        logger.info("Falling back to basic story generation")
+        return generate_basic_story(df, insights)
+
+def format_insights_as_summary(
+    df: pd.DataFrame,
+    insights: List[Dict[str, Any]],
+    use_llm: bool = False
+) -> str:
+    """
+    Format insights as an executive summary.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        The DataFrame being analyzed
+    insights : List[Dict[str, Any]]
+        List of insights
+    use_llm : bool, optional
+        Whether to use LLM for summary generation (default: False)
+        
+    Returns:
+    --------
+    str
+        Formatted executive summary
+    """
+    # If not using LLM or no API key, generate a basic summary
+    if not use_llm or not os.environ.get('GOOGLE_API_KEY'):
+        return generate_basic_summary(df, insights)
+    
+    try:
+        # Try to generate summary with Gemini
+        from .llm_insights_gemini import generate_summary_with_llm
+        summary = generate_summary_with_llm(df, insights)
+        return summary
+    except Exception as e:
+        logger.error(f"Error generating summary with Gemini: {e}")
+        logger.info("Falling back to basic summary generation")
+        return generate_basic_summary(df, insights)
+
+def generate_basic_story(df: pd.DataFrame, insights: List[Dict[str, Any]]) -> str:
+    """
+    Generate a basic data story from insights without using an LLM.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        The dataset being analyzed
+    insights : List[Dict[str, Any]]
+        List of insights
+        
+    Returns:
+    --------
+    str
+        Formatted data story
+    """
+    # Start with an introduction
+    rows, cols = df.shape
+    story = f"""# Data Story: Dataset with {rows} rows and {cols} columns
+
+## Introduction
+This dataset contains {rows} observations across {cols} variables. The analysis below highlights key patterns, relationships, and notable findings discovered in the data.
+
+"""
+    
+    # Add sections for different insight types
+    correlation_insights = [i for i in insights if 'correlation' in i['title'].lower()]
+    distribution_insights = [i for i in insights if 'distribution' in i['title'].lower()]
+    outlier_insights = [i for i in insights if 'outlier' in i['title'].lower()]
+    other_insights = [i for i in insights if 
+                     'correlation' not in i['title'].lower() and 
+                     'distribution' not in i['title'].lower() and 
+                     'outlier' not in i['title'].lower()]
+    
+    # Add correlation section if applicable
+    if correlation_insights:
+        story += "## Relationships Between Variables\n\n"
+        for insight in correlation_insights:
+            story += f"**{insight['title']}**: {insight['description']}\n\n"
+    
+    # Add distribution section if applicable
+    if distribution_insights:
+        story += "## Data Distributions\n\n"
+        for insight in distribution_insights:
+            story += f"**{insight['title']}**: {insight['description']}\n\n"
+    
+    # Add outlier section if applicable
+    if outlier_insights:
+        story += "## Outliers and Anomalies\n\n"
+        for insight in outlier_insights:
+            story += f"**{insight['title']}**: {insight['description']}\n\n"
+    
+    # Add other insights
+    if other_insights:
+        story += "## Additional Observations\n\n"
+        for insight in other_insights:
+            story += f"**{insight['title']}**: {insight['description']}\n\n"
+    
+    # Add recommendations section
+    recommendations = [i.get('recommendation', '') for i in insights if 'recommendation' in i]
+    if recommendations:
+        story += "## Recommendations\n\n"
+        for idx, rec in enumerate(recommendations):
+            if rec:
+                story += f"{idx+1}. {rec}\n"
+    
+    # Add conclusion
+    story += """
+## Conclusion
+This analysis provides an overview of the key patterns and relationships in the dataset. For a more detailed analysis, consider running a comprehensive EDA report.
+"""
+    
+    return story
+
+def generate_basic_summary(df: pd.DataFrame, insights: List[Dict[str, Any]]) -> str:
+    """
+    Generate a basic executive summary from insights without using an LLM.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        The dataset being analyzed
+    insights : List[Dict[str, Any]]
+        List of insights
+        
+    Returns:
+    --------
+    str
+        Formatted executive summary
+    """
+    # Get basic dataset info
+    rows, cols = df.shape
+    missing_percent = (df.isna().sum().sum() / (rows * cols) * 100)
+    numeric_cols = len(df.select_dtypes(include=['number']).columns)
+    cat_cols = len(df.select_dtypes(include=['object', 'category']).columns)
+    
+    # Start the summary
+    summary = f"""This dataset contains {rows} observations with {cols} variables ({numeric_cols} numeric, {cat_cols} categorical). """
+    
+    if missing_percent > 0:
+        summary += f"The data contains {missing_percent:.1f}% missing values. "
+    
+    # Add top 3 most important insights
+    if insights:
+        summary += "Key findings include: "
+        top_insights = insights[:3]  # Take the top 3 insights
+        insight_points = []
+        
+        for insight in top_insights:
+            # Create a concise version of the insight
+            title = insight['title'].replace("Analysis shows that ", "").replace("Data indicates ", "")
+            insight_points.append(title)
+        
+        summary += "; ".join(insight_points) + ". "
+    
+    # Add recommendations if available
+    recommendations = [i.get('recommendation', '') for i in insights if 'recommendation' in i]
+    if recommendations:
+        top_recommendations = recommendations[:2]  # Take top 2 recommendations
+        filtered_recommendations = [r for r in top_recommendations if r]
+        
+        if filtered_recommendations:
+            summary += "Primary recommendations: " + "; ".join(filtered_recommendations) + "."
+    
+    return summary
