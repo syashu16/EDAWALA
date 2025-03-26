@@ -5,6 +5,14 @@ import pandas as pd
 from typing import List, Dict, Any, Optional, Union
 import logging
 import os
+import sys
+import importlib
+
+# Add the parent directory to sys.path to fix import issues
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -37,8 +45,8 @@ def format_insights_as_story(
         return generate_basic_story(df, insights)
     
     try:
-        # Try to generate story with Gemini
-        from .llm_insights_gemini import generate_story_with_llm
+        # Use direct import with absolute path
+        from edawala.storytelling.llm_insights_gemini import generate_story_with_llm
         story = generate_story_with_llm(df, insights)
         return story
     except Exception as e:
@@ -73,8 +81,8 @@ def format_insights_as_summary(
         return generate_basic_summary(df, insights)
     
     try:
-        # Try to generate summary with Gemini
-        from .llm_insights_gemini import generate_summary_with_llm
+        # Use direct import with absolute path
+        from edawala.storytelling.llm_insights_gemini import generate_summary_with_llm
         summary = generate_summary_with_llm(df, insights)
         return summary
     except Exception as e:
@@ -174,7 +182,7 @@ def generate_basic_summary(df: pd.DataFrame, insights: List[Dict[str, Any]]) -> 
     """
     # Get basic dataset info
     rows, cols = df.shape
-    missing_percent = (df.isna().sum().sum() / (rows * cols) * 100)
+    missing_percent = (df.isna().sum().sum() / (rows * cols) * 100) if rows * cols > 0 else 0
     numeric_cols = len(df.select_dtypes(include=['number']).columns)
     cat_cols = len(df.select_dtypes(include=['object', 'category']).columns)
     

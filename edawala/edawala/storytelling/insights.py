@@ -7,10 +7,17 @@ from typing import List, Dict, Any, Optional, Union
 import os
 import logging
 from datetime import datetime
+import sys
+
+# Add the parent directory to sys.path to fix import issues
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
 # Import internal modules
-from .stat_insights import get_statistical_insights
-from .text_generator import format_insights_as_story, format_insights_as_summary
+from edawala.storytelling.stat_insights import get_statistical_insights
+from edawala.storytelling.text_generator import format_insights_as_story, format_insights_as_summary
 
 # Add proper logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -52,9 +59,16 @@ def generate_insights(
                 logger.warning("No Google API key found, using statistical insights only")
                 return insights
             
-            # Import Gemini enhancement functionality
-            from .llm_insights_gemini import enhance_insights_with_llm
-                
+            # Check if package is installed
+            try:
+                import google.generativeai
+            except ImportError:
+                logger.warning("Google Generative AI package not installed, using statistical insights only")
+                return insights
+            
+            # Import directly with absolute import
+            from edawala.storytelling.llm_insights_gemini import enhance_insights_with_llm
+            
             # Enhance insights
             enhanced_insights = enhance_insights_with_llm(df, insights)
             return enhanced_insights
@@ -93,7 +107,7 @@ def generate_story(
     """
     # Generate insights if not provided
     if insights is None:
-        insights = generate_insights(df, use_llm=use_llm)
+        insights = generate_insights(df, use_llm=use_llm, llm_provider=llm_provider)
     
     # Format insights as a story
     story = format_insights_as_story(df, insights, use_llm)
@@ -127,7 +141,7 @@ def get_executive_summary(
     """
     # Generate insights if not provided
     if insights is None:
-        insights = generate_insights(df, use_llm=use_llm)
+        insights = generate_insights(df, use_llm=use_llm, llm_provider=llm_provider)
     
     # Format insights as a summary
     summary = format_insights_as_summary(df, insights, use_llm)

@@ -4,7 +4,11 @@ Statistical insights generator for EDAwala
 import pandas as pd
 import numpy as np
 from typing import List, Dict, Any, Optional
-from scipy import stats
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def get_statistical_insights(df: pd.DataFrame, max_insights: int = 15) -> List[Dict[str, Any]]:
     """
@@ -74,10 +78,7 @@ def get_statistical_insights(df: pd.DataFrame, max_insights: int = 15) -> List[D
                                     f"{top_neg[0]} and {top_neg[1]}. As one increases, the other tends to decrease."
                     })
         except Exception as e:
-            insights.append({
-                'title': "Could not calculate correlations between numeric variables",
-                'description': f"An error occurred while calculating correlations: {str(e)}"
-            })
+            logger.warning(f"Error calculating correlations: {e}")
     
     # 4. Distribution insights for numeric columns
     for col in numeric_cols[:5]:  # Limit to first 5 numeric columns
@@ -116,7 +117,7 @@ def get_statistical_insights(df: pd.DataFrame, max_insights: int = 15) -> List[D
                                     f"{lower_bound:.2f} to {upper_bound:.2f}). These may influence statistical analyses."
                     })
         except Exception as e:
-            # Skip this column if there's an error
+            logger.warning(f"Error analyzing distribution of {col}: {e}")
             continue
     
     # 5. Categorical column insights
@@ -145,7 +146,7 @@ def get_statistical_insights(df: pd.DataFrame, max_insights: int = 15) -> List[D
                                     f"for effective one-hot encoding. Consider grouping less frequent categories."
                     })
         except Exception as e:
-            # Skip this column if there's an error
+            logger.warning(f"Error analyzing categorical column {col}: {e}")
             continue
     
     # 6. Missing value patterns
@@ -164,8 +165,7 @@ def get_statistical_insights(df: pd.DataFrame, max_insights: int = 15) -> List[D
                                 f"Consider imputation strategies or evaluating if this column can be excluded."
                 })
         except Exception as e:
-            # Skip if there's an error
-            pass
+            logger.warning(f"Error analyzing missing values: {e}")
     
     # Limit to max_insights
     return insights[:max_insights]
