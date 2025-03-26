@@ -1,0 +1,4 @@
+include LICENSE
+include README.md
+recursive-include edawala/templates *
+recursive-include edawala/static *

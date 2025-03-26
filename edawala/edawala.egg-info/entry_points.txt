@@ -1,0 +1,2 @@
+[console_scripts]
+edawala = edawala.cli:main

@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: edawala
+Version: 0.1.0
+Summary: Advanced EDA toolkit with AI-powered analysis features
+Home-page: https://github.com/syashu16/edawala
+Author: Yashu
+Author-email: kumaryashu496@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: matplotlib>=3.4.0
+Requires-Dist: seaborn>=0.11.0
+Requires-Dist: scikit-learn>=1.0.0
+Requires-Dist: streamlit>=1.10.0
+Requires-Dist: jinja2>=3.0.0
+Requires-Dist: plotly>=5.0.0
+Requires-Dist: scipy>=1.7.0
+Requires-Dist: google-generativeai>=0.1.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# EDAwala: AI-Powered Exploratory Data Analysis Toolkit
+
+EDAwala is a comprehensive EDA toolkit that combines traditional statistical analysis with modern AI-powered insights to help data scientists and analysts quickly understand their data.
+
+## Features
+
+- **Auto-EDA Report Generator**: One-click comprehensive reports in HTML format with visualizations and statistical insights
+- **Storytelling EDA**: AI-generated insights and narratives that explain your data patterns in plain language using Google's Gemini API (free)
+
+## Installation
+
+```bash
+pip install edawala
