@@ -39,6 +39,10 @@ setup(
         "scipy>=1.7.0",
         "google-generativeai>=0.1.0",
     ],
+    extras_require={
+    "pdf": ["weasyprint>=52.5", "pdfkit>=1.0.0", "reportlab>=3.6.1"],
+    "notebook": ["nbformat>=5.0.0"],
+    },
     entry_points={
         "console_scripts": [
             "edawala=edawala.cli:main",

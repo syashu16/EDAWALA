@@ -1,3 +1,13 @@
+"""
+EDAwala: Advanced Exploratory Data Analysis toolkit with AI-powered features
+"""
+
+__version__ = "0.1.0"
+
+# Import main functionality for easy access
+from edawala.auto_eda.report_generator import generate_eda_report
+from edawala.storytelling.insights import generate_insights, generate_story, get_executive_summary
+
 def run_app():
     """Launch the EDAwala Streamlit application"""
     import streamlit.web.bootstrap as bootstrap
