@@ -1,0 +1,284 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "31d18e75",
+   "metadata": {},
+   "source": [
+    "# Exploratory Data Analysis Report: dataset"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "79f66b63",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## Dataset Information\n",
+    "- **Dataset:** dataset\n",
+    "- **Report Generated:** 2025-03-26 23:54:27\n",
+    "- **Rows:** 18265\n",
+    "- **Columns:** 9\n",
+    "- **Missing Values:** 9884 (6.01%)\n",
+    "                "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "36dc81c5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "import numpy as np\n",
+    "\n",
+    "# Set styles\n",
+    "plt.style.use('seaborn-v0_8-whitegrid')\n",
+    "sns.set_palette(\"viridis\")\n",
+    "\n",
+    "# Load the dataset\n",
+    "# Replace with your actual file path\n",
+    "df = pd.read_csv('your_dataset.csv')\n",
+    "                "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "09a4505e",
+   "metadata": {},
+   "source": [
+    "## Data Overview"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9919f485",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ee23a68c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fdb46833",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.describe()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cb314974",
+   "metadata": {},
+   "source": [
+    "## Missing Values Analysis"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "46c79209",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Missing values heatmap\n",
+    "plt.figure(figsize=(12, 8))\n",
+    "sns.heatmap(df.isna(), cbar=False, cmap='viridis')\n",
+    "plt.title('Missing Values Heatmap')\n",
+    "plt.xlabel('Columns')\n",
+    "plt.ylabel('Rows')\n",
+    "plt.show()\n",
+    "                "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3258d150",
+   "metadata": {},
+   "source": [
+    "## Numeric Distributions"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "82d333b7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Traffic Volume\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Traffic Volume'].dropna(), kde=True)\n",
+    "plt.axvline(df['Traffic Volume'].mean(), color='red', linestyle='--', label=f'Mean: {df['Traffic Volume'].mean():.2f}')\n",
+    "plt.axvline(df['Traffic Volume'].median(), color='green', linestyle=':', label=f'Median: {df['Traffic Volume'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Traffic Volume')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "21e5382c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Congestion Level\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Congestion Level'].dropna(), kde=True)\n",
+    "plt.axvline(df['Congestion Level'].mean(), color='red', linestyle='--', label=f'Mean: {df['Congestion Level'].mean():.2f}')\n",
+    "plt.axvline(df['Congestion Level'].median(), color='green', linestyle=':', label=f'Median: {df['Congestion Level'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Congestion Level')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d90f3556",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Average Speed\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Average Speed'].dropna(), kde=True)\n",
+    "plt.axvline(df['Average Speed'].mean(), color='red', linestyle='--', label=f'Mean: {df['Average Speed'].mean():.2f}')\n",
+    "plt.axvline(df['Average Speed'].median(), color='green', linestyle=':', label=f'Median: {df['Average Speed'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Average Speed')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e6c9c845",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Accidents\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Accidents'].dropna(), kde=True)\n",
+    "plt.axvline(df['Accidents'].mean(), color='red', linestyle='--', label=f'Mean: {df['Accidents'].mean():.2f}')\n",
+    "plt.axvline(df['Accidents'].median(), color='green', linestyle=':', label=f'Median: {df['Accidents'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Accidents')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cd588fb7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Rainfall (mm)\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Rainfall (mm)'].dropna(), kde=True)\n",
+    "plt.axvline(df['Rainfall (mm)'].mean(), color='red', linestyle='--', label=f'Mean: {df['Rainfall (mm)'].mean():.2f}')\n",
+    "plt.axvline(df['Rainfall (mm)'].median(), color='green', linestyle=':', label=f'Median: {df['Rainfall (mm)'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Rainfall (mm)')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "21b4e778",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Temperature (°C)\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Temperature (°C)'].dropna(), kde=True)\n",
+    "plt.axvline(df['Temperature (°C)'].mean(), color='red', linestyle='--', label=f'Mean: {df['Temperature (°C)'].mean():.2f}')\n",
+    "plt.axvline(df['Temperature (°C)'].median(), color='green', linestyle=':', label=f'Median: {df['Temperature (°C)'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Temperature (°C)')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "eed43d83",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Distribution of Humidity (%)\n",
+    "plt.figure(figsize=(10, 6))\n",
+    "sns.histplot(df['Humidity (%)'].dropna(), kde=True)\n",
+    "plt.axvline(df['Humidity (%)'].mean(), color='red', linestyle='--', label=f'Mean: {df['Humidity (%)'].mean():.2f}')\n",
+    "plt.axvline(df['Humidity (%)'].median(), color='green', linestyle=':', label=f'Median: {df['Humidity (%)'].median():.2f}')\n",
+    "plt.legend()\n",
+    "plt.title('Distribution of Humidity (%)')\n",
+    "plt.show()\n",
+    "                        "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9f1f0a93",
+   "metadata": {},
+   "source": [
+    "## Correlation Analysis"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9f682010",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Correlation matrix\n",
+    "plt.figure(figsize=(12, 10))\n",
+    "corr_matrix = df[['Traffic Volume', 'Congestion Level', 'Average Speed', 'Accidents', 'Rainfall (mm)', 'Temperature (°C)', 'Humidity (%)']].corr()\n",
+    "mask = np.triu(np.ones_like(corr_matrix, dtype=bool))\n",
+    "sns.heatmap(corr_matrix, mask=mask, annot=True, fmt='.2f', cmap='coolwarm')\n",
+    "plt.title('Correlation Matrix')\n",
+    "plt.show()\n",
+    "                    "
+   ]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
