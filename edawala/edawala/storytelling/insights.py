@@ -32,7 +32,7 @@ def generate_insights(
     use_llm : bool, optional
         Whether to use LLM-enhanced insights (default: False)
     llm_provider : str, optional
-        LLM provider to use ('gemini' or 'openai') (default: 'gemini')
+        LLM provider to use (default: 'gemini')
     max_insights : int, optional
         Maximum number of insights to generate (default: 15)
         
@@ -48,18 +48,12 @@ def generate_insights(
     if use_llm:
         try:
             # Check for API keys
-            if llm_provider == 'gemini' and not os.environ.get('GOOGLE_API_KEY'):
+            if not os.environ.get('GOOGLE_API_KEY'):
                 logger.warning("No Google API key found, using statistical insights only")
                 return insights
-            elif llm_provider == 'openai' and not os.environ.get('OPENAI_API_KEY'):
-                logger.warning("No OpenAI API key found, using statistical insights only")
-                return insights
             
-            # Import appropriate module based on provider
-            if llm_provider == 'gemini':
-                from .llm_insights_gemini import enhance_insights_with_llm
-            else:
-                from .llm_insights_openai import enhance_insights_with_llm
+            # Import Gemini enhancement functionality
+            from .llm_insights_gemini import enhance_insights_with_llm
                 
             # Enhance insights
             enhanced_insights = enhance_insights_with_llm(df, insights)
@@ -90,7 +84,7 @@ def generate_story(
     use_llm : bool, optional
         Whether to use LLM-enhanced story (default: False)
     llm_provider : str, optional
-        LLM provider to use ('gemini' or 'openai') (default: 'gemini')
+        LLM provider to use (default: 'gemini')
         
     Returns:
     --------
@@ -99,10 +93,10 @@ def generate_story(
     """
     # Generate insights if not provided
     if insights is None:
-        insights = generate_insights(df, use_llm=use_llm, llm_provider=llm_provider)
+        insights = generate_insights(df, use_llm=use_llm)
     
     # Format insights as a story
-    story = format_insights_as_story(df, insights, use_llm, llm_provider)
+    story = format_insights_as_story(df, insights, use_llm)
     
     return story
 
@@ -124,7 +118,7 @@ def get_executive_summary(
     use_llm : bool, optional
         Whether to use LLM-enhanced summary (default: False)
     llm_provider : str, optional
-        LLM provider to use ('gemini' or 'openai') (default: 'gemini')
+        LLM provider to use (default: 'gemini')
         
     Returns:
     --------
@@ -133,9 +127,9 @@ def get_executive_summary(
     """
     # Generate insights if not provided
     if insights is None:
-        insights = generate_insights(df, use_llm=use_llm, llm_provider=llm_provider)
+        insights = generate_insights(df, use_llm=use_llm)
     
     # Format insights as a summary
-    summary = format_insights_as_summary(df, insights, use_llm, llm_provider)
+    summary = format_insights_as_summary(df, insights, use_llm)
     
     return summary

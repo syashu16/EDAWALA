@@ -21,7 +21,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Add minimal CSS - remove complex styling that might cause rendering issues
+# Add minimal CSS
 st.markdown("""
 <style>
     .main-header {
@@ -204,7 +204,7 @@ if st.session_state.df is not None:
                     st.session_state.report_path = report_path
                     st.success(f"Report successfully generated: {os.path.basename(report_path)}")
                 except Exception as e:
-                    st.error(f"Error generating report: {e}")
+                    st.error(f"Error generating report: {str(e)}")
         
         # Display download button if report exists
         if st.session_state.report_path and os.path.exists(st.session_state.report_path):
@@ -240,7 +240,7 @@ if st.session_state.df is not None:
                 # Create a base64 encoded data URL for the HTML content
                 report_b64 = base64.b64encode(report_bytes).decode()
                 iframe_html = f"""
-                <div style="width:100%; height:600px; border:none; overflow:hidden;">
+                <div style="width:100%; height:600px; border:1px solid #ddd; overflow:hidden;">
                     <iframe src="data:text/html;base64,{report_b64}" width="100%" height="600px" style="border:none;"></iframe>
                 </div>
                 """
@@ -258,26 +258,10 @@ if st.session_state.df is not None:
         use_ai = st.checkbox("Use AI-powered enhanced insights", value=False)
         
         if use_ai:
-            ai_col1, ai_col2 = st.columns(2)
-            
-            with ai_col1:
-                llm_provider = st.radio(
-                    "AI Provider",
-                    ["Gemini (Free)", "OpenAI (Paid)"],
-                    index=0
-                )
-            
-            with ai_col2:
-                if llm_provider == "Gemini (Free)":
-                    api_key = st.text_input("Google Gemini API Key", type="password")
-                    st.markdown("""
-                    <small>Get your free API key from <a href="https://makersuite.google.com/" target="_blank">Google AI Studio</a></small>
-                    """, unsafe_allow_html=True)
-                else:
-                    api_key = st.text_input("OpenAI API Key", type="password")
-                    st.markdown("""
-                    <small>Get your API key from <a href="https://platform.openai.com/" target="_blank">OpenAI</a></small>
-                    """, unsafe_allow_html=True)
+            api_key = st.text_input("Google Gemini API Key", type="password")
+            st.markdown("""
+            <small>Get your free API key from <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></small>
+            """, unsafe_allow_html=True)
         
         # More options for insights
         options_col1, options_col2 = st.columns(2)
@@ -304,27 +288,20 @@ if st.session_state.df is not None:
             
             with st.spinner("Generating data insights..."):
                 try:
-                    # Map the provider name to the expected parameter
-                    provider = "gemini" if llm_provider == "Gemini (Free)" else "openai"
-                    
                     # Set the API key in environment variables
                     if use_ai and api_key:
-                        if provider == "gemini":
-                            os.environ["GOOGLE_API_KEY"] = api_key
-                        else:
-                            os.environ["OPENAI_API_KEY"] = api_key
+                        os.environ["GOOGLE_API_KEY"] = api_key
                     
                     # Generate insights with or without LLM
                     insights = generate_insights(
                         df, 
                         use_llm=use_ai,
-                        llm_provider=provider if use_ai else None,
                         max_insights=max_insights
                     )
                     
                     # Get executive summary and story
-                    executive_summary = get_executive_summary(df, insights, use_llm=use_ai, llm_provider=provider if use_ai else None)
-                    data_story = generate_story(df, insights, use_llm=use_ai, llm_provider=provider if use_ai else None)
+                    executive_summary = get_executive_summary(df, insights, use_llm=use_ai)
+                    data_story = generate_story(df, insights, use_llm=use_ai)
                     
                     # Store in session state
                     st.session_state.insights = insights
@@ -333,7 +310,7 @@ if st.session_state.df is not None:
                     
                     st.success("Data story successfully generated!")
                 except Exception as e:
-                    st.error(f"Error generating insights: {e}")
+                    st.error(f"Error generating insights: {str(e)}")
                     st.session_state.insights = None
                     st.session_state.executive_summary = None
                     st.session_state.data_story = None
