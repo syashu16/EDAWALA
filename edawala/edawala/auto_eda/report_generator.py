@@ -10,6 +10,17 @@ import logging
 # Import the simple report generator
 from .simple_report import generate_simple_report
 
+# Add the following import at the top of your report_generator.py file:
+
+from edawala.utils.chart_themes import (
+    apply_edawala_theme, 
+    EDAWALA_PALETTE, 
+    CORRELATION_CMAP,
+    CATEGORICAL_PALETTE
+)
+
+# Then in the chart generation parts of the file, add this line before creating any chart:
+apply_edawala_theme()
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
