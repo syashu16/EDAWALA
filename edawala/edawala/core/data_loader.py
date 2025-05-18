@@ -9,16 +9,6 @@ import os
 def load_data(file_path_or_buffer: Union[str, io.BytesIO]) -> Optional[pd.DataFrame]:
     """
     Load data from a file path or uploaded file buffer.
-    
-    Parameters:
-    -----------
-    file_path_or_buffer : str or BytesIO
-        Path to the file or an uploaded file buffer
-        
-    Returns:
-    --------
-    pd.DataFrame or None
-        The loaded DataFrame, or None if loading failed
     """
     try:
         # Get file extension
@@ -83,18 +73,6 @@ def load_data(file_path_or_buffer: Union[str, io.BytesIO]) -> Optional[pd.DataFr
 def save_data(df: pd.DataFrame, file_path: str) -> bool:
     """
     Save DataFrame to a file.
-    
-    Parameters:
-    -----------
-    df : pd.DataFrame
-        DataFrame to save
-    file_path : str
-        Path where the file will be saved
-        
-    Returns:
-    --------
-    bool
-        True if saving was successful, False otherwise
     """
     try:
         # Get file extension
@@ -130,38 +108,16 @@ def save_data(df: pd.DataFrame, file_path: str) -> bool:
 def preview_data(df: pd.DataFrame, n_rows: int = 5) -> pd.DataFrame:
     """
     Get a preview of the DataFrame.
-    
-    Parameters:
-    -----------
-    df : pd.DataFrame
-        DataFrame to preview
-    n_rows : int, optional
-        Number of rows to preview (default: 5)
-        
-    Returns:
-    --------
-    pd.DataFrame
-        Preview of the DataFrame
     """
     return df.head(n_rows)
 
 def get_data_info(df: pd.DataFrame) -> dict:
     """
     Get basic information about the DataFrame.
-    
-    Parameters:
-    -----------
-    df : pd.DataFrame
-        DataFrame to analyze
-        
-    Returns:
-    --------
-    dict
-        Dictionary with basic information
     """
     rows, cols = df.shape
     missing_values = df.isna().sum().sum()
-    missing_percent = round((missing_values / (rows * cols)) * 100, 2)
+    missing_percent = round((missing_values / (rows * cols)) * 100, 2) if rows * cols > 0 else 0.0
     duplicates = df.duplicated().sum()
     
     # Count data types

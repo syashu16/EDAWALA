@@ -8,11 +8,15 @@ import base64
 from io import BytesIO
 import time
 import numpy as np
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import internal modules
 from edawala.core.data_loader import load_data
 from edawala.auto_eda.report_generator import generate_eda_report
 from edawala.storytelling.insights import generate_insights, generate_story, get_executive_summary
+
 
 # Set page configuration
 st.set_page_config(
@@ -1128,33 +1132,12 @@ else:
     </div>
     """, unsafe_allow_html=True)
     
-    # Feature highlights with icons
-    st.markdown("""
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 40px;">
-        <div class="feature-card">
-            <div class="feature-icon">📈</div>
-            <div class="feature-title">Automatic EDA Reports</div>
-            <div class="feature-desc">Generate comprehensive exploratory data analysis reports with just one click.</div>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">📝</div>
-            <div class="feature-title">Data Storytelling</div>
-            <div class="feature-desc">Convert complex data patterns into meaningful narratives and actionable insights.</div>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">🔍</div>
-            <div class="feature-title">Interactive Exploration</div>
-            <div class="feature-desc">Explore your data with interactive visualizations and detailed analysis.</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+   
     
     # Add version and copyright info
     st.markdown("""
     <div class="footer">
         <p>EDAwala v1.0.0 | © 2025 EDAwala</p>
-        <p style="margin-top: 5px;">Current user: syashu16 | Last updated: 2025-03-26</p>
+        <p style="margin-top: 5px;">Made with ❤️ by Yashu </p>
     </div>
     """, unsafe_allow_html=True)
